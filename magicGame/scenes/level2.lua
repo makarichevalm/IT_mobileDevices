@@ -24,7 +24,7 @@ local function MovePlayer(event)
 
     elseif(event.phase == "moved") then
         player.x = event.x-player.touchOfsetX
-    elseif(event.phase == "ended" or "cancelled" == phase) then
+    elseif(event.phase == "ended" or "cancelled" == event.phase) then
         display.currentStage:setFocus(nil)
     end
     return true
@@ -47,7 +47,7 @@ local function sumLife()--pink
 end
 local function endGame()
 	composer.setVariable( "finalScore", count )
-	composer.gotoScene( "scenes.final", { time=300, effect="crossFade" } )
+	composer.gotoScene( "scenes.final", { time=100, effect="crossFade" } )
 end
 
 local function onCollision( event )
@@ -71,7 +71,7 @@ local function onCollision( event )
             display.remove(object2)
             if ( life == 0 ) then
                 display.remove( player )
-                timer.performWithDelay( 500, endGame )
+                timer.performWithDelay( 100, endGame )
             end
         end
     end
@@ -79,6 +79,7 @@ end
 -- create()
 function scene:create( event )
 	local sceneGroup = self.view
+    physics.pause()
     local background = display.newImageRect(sceneGroup,"img/phone2.jpg", 1400, 867);
     background.x = display.contentCenterX-250
     background.y = display.contentCenterY-70
@@ -153,7 +154,7 @@ function scene:hide( event )
         timer.cancel( spawnYT )
         timer.cancel( spawnHT )
 	elseif ( phase == "did" ) then
-        physics.pause()
+        physics.stop()
         audio.stop(1)
         composer.removeScene( "scenes.level2" )
 	end

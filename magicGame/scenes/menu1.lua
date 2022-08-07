@@ -12,7 +12,7 @@ local function ClickLevel1( event )
         print( "lev1" )
         audio.play( click, {channel=1} )
         audio.setVolume( 0.5, {channel=1} )
-        composer.gotoScene( "scenes.level1", { time=500, effect="crossFade" } )
+        composer.gotoScene( "scenes.level1", { time=200, effect="crossFade" } )
         --event.target:setEnabled(false)
     end
 end
@@ -21,7 +21,7 @@ local function ClickLevel2( event )
         print( "lev2" )
         audio.play( click, {channel=1} )
         audio.setVolume( 0.5, {channel=1} )
-        composer.gotoScene( "scenes.level2", { time=500, effect="crossFade" } )
+        composer.gotoScene( "scenes.level2", { time=200, effect="crossFade" } )
         --event.target:setEnabled(false)
     end
 end

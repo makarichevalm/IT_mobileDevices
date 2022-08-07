@@ -2,7 +2,6 @@ local composer = require( "composer" )
 local scene = composer.newScene()
 local physics = require( "physics" )
 physics.start()
---physics.setGravity( 0, 0 )
 local music;
 local count = 0
 local life = 3
@@ -30,7 +29,7 @@ local function MovePlayer(event)
 
     elseif(event.phase == "moved") then
         player.x = event.x-player.touchOfsetX
-    elseif(event.phase == "ended" or "cancelled" == phase) then
+    elseif(event.phase == "ended" or "cancelled" == event.phase) then
         display.currentStage:setFocus(nil)
     end
     return true
@@ -40,7 +39,7 @@ local function restorePlayer()
 	player.x = display.contentCenterX
 	player.y = display.contentHeight +30
 
-	transition.to( player, { alpha=1, time=500,
+	transition.to( player, { alpha=1, time=200,
 		onComplete = function()
 			player.isBodyActive = true
 			died = false
@@ -65,9 +64,8 @@ local function sumLife()--жизнь
 end
 local function endGame()
 	composer.setVariable( "finalScore", count )
-	composer.gotoScene( "scenes.final", { time=300, effect="crossFade" } )
+	composer.gotoScene( "scenes.final", { time=100, effect="crossFade" } )
 end
-
 local function onCollision( event )
     if ( event.phase == "began" ) then
         local object1 = event.object1
@@ -91,16 +89,15 @@ local function onCollision( event )
                 display.remove(object2)
                 if ( life == 0 ) then
                     display.remove( player )
-                    timer.performWithDelay( 500, endGame )
+                    timer.performWithDelay( 100, endGame )
                 else
                     player.alpha = 0
-                    timer.performWithDelay( 500, restorePlayer )
+                    timer.performWithDelay( 200, restorePlayer )
                 end
             end
         end
     end
 end
-
 -- create()
 function scene:create( event )
 	local sceneGroup = self.view
@@ -112,11 +109,9 @@ function scene:create( event )
     physics.addBody( player, { radius=40, isSensor=true } )
     player.x = display.contentCenterX
     player.y = display.contentHeight +30
-    
     player.gravityScale = 0
 	player.ID = "player"
     player:addEventListener( "touch", MovePlayer )
-	-- Display lives and score
 	livesText = display.newText( sceneGroup, "Lives: " .. life, 80, 0,"IdealGothicBold.otf", 30 )
 	scoreText = display.newText( sceneGroup, "Score: " .. count, 230, 0, "IdealGothicBold.otf", 30 )
     music = audio.loadSound( "music/level1.mp3" )
@@ -181,7 +176,7 @@ function scene:hide( event )
         timer.cancel( spawnSnT )
         timer.cancel( spawnHT )
 	elseif ( phase == "did" ) then
-        physics.pause()
+        physics.stop()
         audio.stop(1)
         composer.removeScene( "scenes.level1" )
 	end
